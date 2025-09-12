@@ -2,216 +2,178 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>アイコン文字入れシミュレーター</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>アイコン文字入れシミュレーター　-慌てて作ったからまだ試作だわん-</title>
 
-<!-- 日本語対応 Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&family=M+PLUS+Rounded+1c&family=Noto+Sans+JP&family=Noto+Serif+JP&display=swap" rel="stylesheet">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Kosugi+Maru&family=Zen+Maru+Gothic:wght@500;700&family=RocknRoll+One&family=Roboto:wght@700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
 
 <style>
-/* ===== 全体レイアウト ===== */
 body {
-  font-family: 'Noto Sans JP', sans-serif;
-  background: #f0f2f5;
-  margin: 0;
-  padding: 0;
-  color: #333;
+  background:#f4f4f4;
+  font-family:'Noto Sans JP', sans-serif;
+  margin:0;
+  padding:0;
 }
-
-h1 {
-  text-align: center;
-  padding: 20px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: #fff;
-  font-size: 26px;
-  margin: 0 0 20px 0;
-  letter-spacing: 1px;
+header {
+  background:#333;
+  color:#fff;
+  text-align:center;
+  padding:1.2rem;
+  font-size:1.4rem;
+  font-weight:bold;
+  letter-spacing:0.05em;
 }
-
 .container {
-  max-width: 900px;
-  margin: auto;
-  padding: 0 20px 40px;
+  max-width:1200px;
+  margin:1.5rem auto;
+  display:flex;
+  flex-wrap:wrap;
+  gap:1.5rem;
+  justify-content:center;
+  padding:0 1rem;
 }
-
-/* ===== プレビューエリア ===== */
-.preview-area {
-  text-align: center;
-  margin-bottom: 25px;
-}
-
-canvas {
-  border-radius: 12px;
-  border: 2px solid #ccc;
-  max-width: 100%;
-  height: auto;
-  background: #fff;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.1);
-}
-
-/* ===== コントロールパネル ===== */
 .controls {
-  background: #fff;
-  border-radius: 12px;
-  padding: 25px;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  flex:1 1 360px;
+  background:#fff;
+  padding:1.5rem;
+  border-radius:1rem;
+  box-shadow:0 4px 12px rgba(0,0,0,0.1);
 }
-
 .controls label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 8px;
-  font-size: 16px;
+  display:block;
+  margin-top:1rem;
+  font-weight:600;
+  font-size:1.1rem;
 }
-
-/* 入力系共通 */
 .controls input[type="text"],
 .controls input[type="number"],
-.controls select {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #bbb;
-  border-radius: 8px;
-  font-size: 18px;
-  background: #fafafa;
-  box-sizing: border-box;
-}
-
+.controls select,
 .controls input[type="color"] {
-  width: 100%;
-  height: 50px;
-  border: 1px solid #bbb;
-  border-radius: 8px;
-  cursor: pointer;
-  background: #fff;
+  width:100%;
+  font-size:1rem;
+  padding:0.5rem;
+  margin-top:0.4rem;
+  border:1px solid #ccc;
+  border-radius:0.5rem;
 }
-
-/* ボタン */
-.controls .btn-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  justify-content: center;
+.preview-box {
+  flex:1 1 420px;
+  background:#fff;
+  padding:1rem;
+  border-radius:1rem;
+  box-shadow:0 4px 12px rgba(0,0,0,0.1);
+  text-align:center;
 }
-
-button,
-a#download {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: #fff;
-  padding: 14px 24px;
-  font-size: 18px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  text-decoration: none;
-  text-align: center;
-  transition: transform 0.1s, box-shadow 0.2s;
+.preview-box canvas {
+  max-width:100%;
+  height:auto;
+  border-radius:0.5rem;
+  cursor:pointer;
+  transition:transform 0.2s;
 }
-
-button:hover,
-a#download:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+.preview-box canvas:hover {
+  transform:scale(1.02);
 }
-
-/* スマホ対応 */
-@media (max-width: 600px) {
-  h1 { font-size: 22px; }
-  .controls { padding: 15px; }
+.color-label {
+  display:flex;
+  align-items:center;
+  gap:0.5rem;
 }
 </style>
 </head>
 <body>
-<h1>アイコン文字入れシミュレーター</h1>
+<header>アイコン文字入れシミュレーター　-慌てて作ったからまだ試作だわん-</header>
 
 <div class="container">
-  <div class="preview-area">
-    <!-- 元画像を読み込む（非表示） -->
-    <img id="baseImg" src="base.png" alt="Base Image" style="display:none;">
-    <!-- ここに合成プレビューを表示 -->
-    <canvas id="canvas" width="800" height="600"></canvas>
+  <div class="controls">
+    <label>文字</label>
+    <input type="text" id="textInput" value="サンプル文字">
+
+    <label>書体</label>
+    <select id="fontSelect">
+      <option value="Noto Sans JP">Noto Sans JP（標準）</option>
+      <option value="Zen Maru Gothic">Zen Maru Gothic（丸ゴシック）</option>
+      <option value="Kosugi Maru">Kosugi Maru（丸文字）</option>
+      <option value="RocknRoll One">RocknRoll One（太字・おしゃれ）</option>
+      <option value="Roboto">Roboto Bold（英字）</option>
+      <option value="Montserrat">Montserrat Bold（英字）</option>
+    </select>
+
+    <label>文字サイズ(px)</label>
+    <input type="number" id="sizeInput" value="120">
+
+    <label>X座標(px)</label>
+    <input type="number" id="xInput" value="200">
+
+    <label>Y座標(px)</label>
+    <input type="number" id="yInput" value="600">
+
+    <label class="color-label">文字色
+      <input type="color" id="colorInput" value="#ff0000">
+    </label>
+
+    <label>背景画像 (PNG/JPG)</label>
+    <input type="file" id="bgUpload" accept="image/*">
   </div>
 
-  <div class="controls">
-    <div>
-      <label for="text">文字</label>
-      <input type="text" id="text" value="サンプル">
-    </div>
-
-    <div>
-      <label for="color">色</label>
-      <input type="color" id="color" value="#ff0000">
-    </div>
-
-    <div>
-      <label for="size">サイズ (px)</label>
-      <input type="number" id="size" value="120" min="10" max="300">
-    </div>
-
-    <div style="display:flex; gap:20px;">
-      <div style="flex:1;">
-        <label for="x">X座標</label>
-        <input type="number" id="x" value="200">
-      </div>
-      <div style="flex:1;">
-        <label for="y">Y座標</label>
-        <input type="number" id="y" value="600">
-      </div>
-    </div>
-
-    <div>
-      <label for="fontSelect">書体</label>
-      <select id="fontSelect">
-        <option value="'Noto Sans JP', sans-serif">Noto Sans JP</option>
-        <option value="'Noto Serif JP', serif">Noto Serif JP</option>
-        <option value="'Kosugi Maru', sans-serif">Kosugi Maru</option>
-        <option value="'M PLUS Rounded 1c', sans-serif">M PLUS Rounded 1c</option>
-      </select>
-    </div>
-
-    <div class="btn-row">
-      <button onclick="draw()">プレビュー更新</button>
-      <a id="download" download="generated.png">ダウンロード</a>
-    </div>
+  <div class="preview-box">
+    <canvas id="previewCanvas"></canvas>
+    <p>※画像をクリック/タップで拡大（スマホは長押しで保存可）</p>
   </div>
 </div>
 
 <script>
-function draw() {
-  const img = document.getElementById('baseImg');
-  const canvas = document.getElementById('canvas');
-  const ctx = canvas.getContext('2d');
+const textInput = document.getElementById('textInput');
+const fontSelect = document.getElementById('fontSelect');
+const sizeInput = document.getElementById('sizeInput');
+const xInput = document.getElementById('xInput');
+const yInput = document.getElementById('yInput');
+const colorInput = document.getElementById('colorInput');
+const bgUpload = document.getElementById('bgUpload');
+const canvas = document.getElementById('previewCanvas');
+const ctx = canvas.getContext('2d');
 
-  // 画像がまだ読み込まれていない場合の対策
-  if (!img.complete) {
-    img.onload = draw;
-    return;
-  }
+let bgImage = new Image();
+bgImage.src = 'sample.png'; // ここを自分の初期画像に差し替えてください
 
-  canvas.width = img.width;
-  canvas.height = img.height;
-
+function draw(){
+  if(!bgImage.complete) return;
+  canvas.width = bgImage.width * 0.6; // 表示サイズを60%に縮小
+  canvas.height = bgImage.height * 0.6;
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.drawImage(img, 0, 0);
-
-  const text  = document.getElementById('text').value;
-  const color = document.getElementById('color').value;
-  const size  = parseInt(document.getElementById('size').value,10);
-  const x     = parseInt(document.getElementById('x').value,10);
-  const y     = parseInt(document.getElementById('y').value,10);
-  const font  = document.getElementById('fontSelect').value;
-
-  ctx.fillStyle = color;
-  ctx.font = `${size}px ${font}`;
+  ctx.drawImage(bgImage,0,0,canvas.width,canvas.height);
+  ctx.font = `${sizeInput.value}px '${fontSelect.value}'`;
+  ctx.fillStyle = colorInput.value;
   ctx.textBaseline = 'top';
-  ctx.fillText(text, x, y);
-
-  document.getElementById('download').href = canvas.toDataURL();
+  ctx.fillText(textInput.value, parseInt(xInput.value), parseInt(yInput.value));
 }
 
-window.onload = draw;
+[textInput,fontSelect,sizeInput,xInput,yInput,colorInput].forEach(el=>{
+  el.addEventListener('input',draw);
+});
+
+bgUpload.addEventListener('change', e=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    bgImage = new Image();
+    bgImage.onload = draw;
+    bgImage.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+bgImage.onload = draw;
+
+canvas.addEventListener('click',()=>{
+  // 拡大画像を新しいタブで開く
+  const link = document.createElement('a');
+  link.href = canvas.toDataURL('image/png');
+  link.target = '_blank';
+  link.click();
+});
 </script>
 </body>
 </html>
