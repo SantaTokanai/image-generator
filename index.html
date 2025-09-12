@@ -28,7 +28,7 @@
 
   .wrap{max-width:980px;margin:18px auto;padding:0 16px;box-sizing:border-box;}
 
-  /* プレビュー（上部） */
+  /* プレビュー */
   .preview-area{
     background:var(--card-bg);
     border-radius:12px;
@@ -49,7 +49,23 @@
   }
   .preview-note{font-size:0.9rem;color:#555;margin-top:10px;}
 
-  /* コントロールカード */
+  /* ボタン群（プレビュー直下） */
+  .preview-actions{
+    display:flex;
+    gap:12px;
+    justify-content:center;
+    margin:14px 0 20px 0;
+  }
+  button.primary{
+    background:linear-gradient(90deg,var(--accent1),var(--accent2));
+    color:#fff;border:0;padding:12px 18px;border-radius:10px;font-size:1rem;cursor:pointer;font-weight:700;
+    box-shadow:0 6px 16px rgba(92,94,252,0.18);
+  }
+  a.download{
+    display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none;background:#111;color:#fff;
+  }
+
+  /* 設定パネル */
   .controls{
     background:var(--card-bg);
     border-radius:12px;
@@ -66,7 +82,6 @@
     padding:12px 10px;font-size:1rem;border-radius:8px;border:1px solid #d0d6e0;background:#fbfdff;
   }
   .field input[type="number"]{width:100%;}
-  /* 色入力を大きく見やすく */
   .color-row{display:flex;gap:10px;align-items:center;}
   .color-swatch{
     width:56px;height:44px;border-radius:8px;border:1px solid #c9cfe0;overflow:hidden;background:#fff;
@@ -75,22 +90,10 @@
   .color-swatch input[type="color"]{
     -webkit-appearance:none;border:0;background:transparent;width:100%;height:100%;cursor:pointer;
   }
-  /* ボタン群 */
-  .actions{grid-column:1/-1;display:flex;gap:12px;justify-content:center;margin-top:6px;}
-  button.primary{
-    background:linear-gradient(90deg,var(--accent1),var(--accent2));
-    color:#fff;border:0;padding:12px 18px;border-radius:10px;font-size:1rem;cursor:pointer;font-weight:700;
-    box-shadow:0 6px 16px rgba(92,94,252,0.18);
-  }
-  a.download{
-    display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none;background:#111;color:#fff;
-  }
-  /* レスポンシブ微調整 */
   @media (max-width:640px){
     .controls{grid-template-columns:1fr;}
     header h1{font-size:1rem;}
   }
-  /* hidden canvas offscreen */
   #hiddenCanvas{display:none;}
 </style>
 </head>
@@ -102,11 +105,16 @@
   </header>
 
   <div class="wrap">
-    <!-- プレビュー画像（上部表示） -->
+    <!-- プレビュー -->
     <div class="preview-area">
-      <!-- 画像要素は常に表示。スマホで長押し→写真に保存ができる -->
       <img id="previewImage" alt="プレビュー画像">
-      <div class="preview-note">プレビューを見ながら下の設定で調整してください。プレビューを長押しで保存できます（スマホ）。</div>
+      <div class="preview-note">プレビューを見ながら設定してください。長押しで保存（スマホ）。</div>
+    </div>
+
+    <!-- ★ プレビュー直下にボタンを配置 -->
+    <div class="preview-actions">
+      <button id="updateBtn" class="primary" type="button">プレビュー更新</button>
+      <a id="downloadBtn" class="download" download="generated.png" href="#">ダウンロード</a>
     </div>
 
     <!-- 設定パネル -->
@@ -119,15 +127,14 @@
       <div class="field">
         <label for="fontSelect">書体</label>
         <select id="fontSelect">
-          <!-- 値はフォントファミリー名（canvasで使います） -->
-          <option value="Noto Sans JP">Noto Sans JP（標準）</option>
-          <option value="Noto Serif JP">Noto Serif JP（セリフ）</option>
-          <option value="M PLUS Rounded 1c">M PLUS Rounded 1c（丸み）</option>
-          <option value="Kosugi Maru">Kosugi Maru（カジュアル）</option>
-          <option value="Montserrat">Montserrat（太字・英字向け）</option>
-          <option value="Poppins">Poppins（太字・英字）</option>
-          <option value="Roboto">Roboto（太字・英字）</option>
-          <option value="RocknRoll One">RocknRoll One（ポップ）</option>
+          <option value="Noto Sans JP">Noto Sans JP</option>
+          <option value="Noto Serif JP">Noto Serif JP</option>
+          <option value="M PLUS Rounded 1c">M PLUS Rounded 1c</option>
+          <option value="Kosugi Maru">Kosugi Maru</option>
+          <option value="Montserrat">Montserrat</option>
+          <option value="Poppins">Poppins</option>
+          <option value="Roboto">Roboto</option>
+          <option value="RocknRoll One">RocknRoll One</option>
         </select>
       </div>
 
@@ -152,34 +159,15 @@
           <div class="color-swatch">
             <input id="colorInput" type="color" value="#ff0000" />
           </div>
-          <div style="font-size:0.95rem;color:#555;">選択した色をプレビューに反映</div>
         </div>
-      </div>
-
-      <!-- アクション -->
-      <div class="actions">
-        <button id="updateBtn" class="primary" type="button">プレビュー更新</button>
-        <!-- PC向け直接DLボタン（ダウンロード属性で保存） -->
-        <a id="downloadBtn" class="download" download="generated.png" href="#">ダウンロード</a>
       </div>
     </div>
   </div>
 
-  <!-- hidden canvas（高解像度で描画し、画像データを作る） -->
   <canvas id="hiddenCanvas"></canvas>
 
 <script>
-/*
-  実装のポイント：
-  - base.png（同階層）を読み込み、hiddenCanvas に元解像度で描画する。
-  - プレビュー表示は canvas.toDataURL() を <img id="previewImage"> に反映して表示。
-  - 「プレビュー更新」ボタンで明示的に更新（要件どおり）。
-  - スマホで画像を長押し→写真アプリに保存できるように、プレビューは <img> で表示する。
-  - PC向けは「ダウンロード」リンクを更新して直接ダウンロードできる。
-*/
-
-const baseSrc = 'base.png'; // ← GitHub リポジトリに配置済みの base.png
-
+const baseSrc = 'base.png';
 const previewImage = document.getElementById('previewImage');
 const hiddenCanvas = document.getElementById('hiddenCanvas');
 const ctx = hiddenCanvas.getContext('2d');
@@ -195,73 +183,41 @@ const downloadBtn = document.getElementById('downloadBtn');
 
 let baseImg = new Image();
 baseImg.src = baseSrc;
-baseImg.onload = () => {
-  // 初期描画（デフォルトで「サンプル文字」を反映）
-  drawAndUpdatePreview();
-};
+baseImg.onload = () => drawAndUpdatePreview();
 
-// 描画関数（高解像度：canvas = 元画像サイズ）
 function drawToCanvas(){
-  if(!baseImg.complete) return;
-  // internal canvas = original image size
   hiddenCanvas.width = baseImg.naturalWidth || baseImg.width;
   hiddenCanvas.height = baseImg.naturalHeight || baseImg.height;
 
-  // 背景画像を高解像度で描画
   ctx.clearRect(0,0,hiddenCanvas.width,hiddenCanvas.height);
   ctx.drawImage(baseImg, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
 
-  // テキスト設定（フォント名を安全に使う）
   const fontFamily = fontSelect.value;
-  const size = Math.max(6, parseInt(sizeInput.value || 120, 10));
-  // canvas で日本語＋英字ともに落ちないよう、フォント名を引用して汎用フォールバックを指定
+  const size = Math.max(6, parseInt(sizeInput.value||120,10));
   ctx.textBaseline = 'top';
-  ctx.fillStyle = colorInput.value || '#000';
-  // 例: '120px "Noto Sans JP", sans-serif'
+  ctx.fillStyle = colorInput.value;
   ctx.font = `${size}px "${fontFamily}", sans-serif`;
-
-  // 描画（座標はそのまま px 単位：元画像の座標系）
-  const x = parseInt(xInput.value || 0, 10);
-  const y = parseInt(yInput.value || 0, 10);
+  const x = parseInt(xInput.value||0,10);
+  const y = parseInt(yInput.value||0,10);
   ctx.fillText(textInput.value || '', x, y);
 }
 
-// プレビュー更新＆ダウンロードリンク更新
 function drawAndUpdatePreview(){
   drawToCanvas();
-  // プレビューに表示するのはデータURL -> <img> の src にセットすることで、スマホで長押し可能に
   const dataUrl = hiddenCanvas.toDataURL('image/png');
   previewImage.src = dataUrl;
-
-  // ダウンロードリンクも更新（PC向け）
   downloadBtn.href = dataUrl;
 }
 
-// 初期ボタン反応：明示的に「プレビュー更新」で反映する仕様
-updateBtn.addEventListener('click', (e)=>{
+updateBtn.addEventListener('click', e => {
   e.preventDefault();
   drawAndUpdatePreview();
 });
 
-// クリックでフルサイズ（新タブ）表示（PCでの素早い確認に便利）
-previewImage.addEventListener('click', ()=>{
-  // 新しいタブでフルサイズの画像を表示（長押し保存とは干渉しない）
+previewImage.addEventListener('click', () => {
   const url = hiddenCanvas.toDataURL('image/png');
   window.open(url, '_blank');
 });
-
-// optional: Enterキーで更新（入力中にEnterで更新したい場合）
-[textInput, sizeInput, xInput, yInput].forEach(el=>{
-  el.addEventListener('keydown', function(ev){
-    if(ev.key === 'Enter') {
-      ev.preventDefault();
-      drawAndUpdatePreview();
-    }
-  });
-});
-
-// フォントの読み込みが遅い場合に備え、フォントが読み込まれてから確実に描画したい場合は
-// font loading API を使うこともできますが（ブラウザ互換注意）、ここでは単純に baseImg.onload で描画します.
 </script>
 </body>
 </html>
