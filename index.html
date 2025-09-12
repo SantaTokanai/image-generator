@@ -29,25 +29,13 @@ header h1 {
 }
 header .subtitle {
   display:block;
-  font-size:0.9rem;   /* サブタイトル小さめ */
+  font-size:0.9rem;
   margin-top:0.2rem;
   color:#ddd;
 }
-.top-image {
-  text-align:center;
-  background:#fff;
-  padding:1rem;
-  margin-bottom:1rem;
-  box-shadow:0 4px 10px rgba(0,0,0,0.1);
-}
-.top-image img {
-  max-width:95%;
-  height:auto;
-  border-radius:0.5rem;
-}
 .container {
   max-width:1200px;
-  margin:0 auto 1.5rem;
+  margin:1.5rem auto;
   display:flex;
   flex-wrap:wrap;
   gap:1.5rem;
@@ -78,6 +66,21 @@ header .subtitle {
   border:1px solid #ccc;
   border-radius:0.5rem;
 }
+.update-btn {
+  margin-top:1.5rem;
+  width:100%;
+  padding:0.8rem;
+  font-size:1.1rem;
+  font-weight:bold;
+  color:#fff;
+  background:#333;
+  border:none;
+  border-radius:0.6rem;
+  cursor:pointer;
+}
+.update-btn:hover {
+  background:#555;
+}
 .preview-box {
   flex:1 1 420px;
   background:#fff;
@@ -86,15 +89,14 @@ header .subtitle {
   box-shadow:0 4px 12px rgba(0,0,0,0.1);
   text-align:center;
 }
+.preview-box a {
+  display:inline-block;
+  text-decoration:none;
+}
 .preview-box canvas {
   max-width:100%;
   height:auto;
   border-radius:0.5rem;
-  cursor:pointer;
-  transition:transform 0.2s;
-}
-.preview-box canvas:hover {
-  transform:scale(1.02);
 }
 .color-label {
   display:flex;
@@ -109,11 +111,6 @@ header .subtitle {
     <span class="subtitle">-慌てて作ったからまだ試作だわん-</span>
   </h1>
 </header>
-
-<!-- デフォルト画像を上部に常時表示 -->
-<div class="top-image">
-  <img src="base.png" alt="ベース画像">
-</div>
 
 <div class="container">
   <div class="controls">
@@ -142,11 +139,16 @@ header .subtitle {
     <label class="color-label">文字色
       <input type="color" id="colorInput" value="#ff0000">
     </label>
+
+    <button class="update-btn" id="updateBtn">プレビュー更新</button>
   </div>
 
   <div class="preview-box">
-    <canvas id="previewCanvas"></canvas>
-    <p>※画像をクリック/タップで拡大（スマホは長押しで保存可）</p>
+    <!-- aタグで囲み download 属性を付与 -->
+    <a id="downloadLink" href="#" download="generated.png">
+      <canvas id="previewCanvas"></canvas>
+    </a>
+    <p>※プレビューを長押しで保存（スマホ）／クリックでダウンロード（PC）</p>
   </div>
 </div>
 
@@ -159,10 +161,11 @@ const yInput = document.getElementById('yInput');
 const colorInput = document.getElementById('colorInput');
 const canvas = document.getElementById('previewCanvas');
 const ctx = canvas.getContext('2d');
+const updateBtn = document.getElementById('updateBtn');
+const downloadLink = document.getElementById('downloadLink');
 
-// GitHub Pagesにある base.png を固定
 let bgImage = new Image();
-bgImage.src = 'base.png';
+bgImage.src = 'base.png';  // 固定ベース画像
 
 function draw(){
   if(!bgImage.complete) return;
@@ -174,20 +177,15 @@ function draw(){
   ctx.fillStyle = colorInput.value;
   ctx.textBaseline = 'top';
   ctx.fillText(textInput.value, parseInt(xInput.value), parseInt(yInput.value));
+  // aタグのhrefを更新してダウンロード可能に
+  downloadLink.href = canvas.toDataURL('image/png');
 }
 
-[textInput,fontSelect,sizeInput,xInput,yInput,colorInput].forEach(el=>{
-  el.addEventListener('input',draw);
-});
-
+// 初期描画
 bgImage.onload = draw;
 
-canvas.addEventListener('click',()=>{
-  const link = document.createElement('a');
-  link.href = canvas.toDataURL('image/png');
-  link.target = '_blank';
-  link.click();
-});
+// ボタンで更新
+updateBtn.addEventListener('click', draw);
 </script>
 </body>
 </html>
