@@ -4,45 +4,76 @@
 <meta charset="UTF-8">
 <title>画像生成シミュレーター</title>
 <style>
-  body { font-family: sans-serif; padding:20px; }
-  canvas { border:1px solid #ccc; max-width:100%; }
-  .controls { margin-top:10px; }
+  body { font-family: sans-serif; padding: 20px; background: #f9f9f9; }
+  h1 { font-size: 24px; margin-bottom: 10px; }
+  canvas { border:1px solid #ccc; max-width:100%; height:auto; display:block; margin-bottom:10px; }
+  .controls { margin-bottom:20px; }
+  .controls input, .controls select, .controls button {
+    font-size: 16px;
+    padding: 6px 10px;
+    margin: 4px 0;
+  }
 </style>
 </head>
 <body>
 <h1>画像生成シミュレーター</h1>
 
+<!-- Canvas -->
 <img id="baseImg" src="base.png" alt="Base" style="display:none;">
-<canvas id="canvas"></canvas>
+<canvas id="canvas" width="800" height="600"></canvas>
 
+<!-- 操作パネル -->
 <div class="controls">
-  <p>テキスト: <input type="text" id="text" value="サンプル"></p>
-  <p>色: <input type="color" id="color" value="#000000"></p>
-  <p>サイズ: <input type="number" id="size" value="48"> px</p>
-  <p>X座標: <input type="number" id="x" value="50"> / Y座標: <input type="number" id="y" value="50"></p>
-  <button onclick="draw()">プレビュー</button>
-  <a id="download" download="generated.png">ダウンロード</a>
+  <p>文字: <input type="text" id="text" value="サンプル"></p>
+  <p>色: <input type="color" id="color" value="#ff0000"></p>
+  <p>サイズ(px): <input type="number" id="size" value="48" min="10" max="200"></p>
+  <p>X: <input type="number" id="x" value="50"> / Y: <input type="number" id="y" value="50"></p>
+  <p>フォント:
+    <select id="fontSelect">
+      <option value="sans-serif">Sans-serif</option>
+      <option value="serif">Serif</option>
+      <option value="monospace">Monospace</option>
+      <option value="'Courier New', monospace">Courier New</option>
+      <option value="'Arial', sans-serif">Arial</option>
+    </select>
+  </p>
+  <button onclick="draw()">プレビュー更新</button>
+  <a id="download" download="generated.png" style="margin-left:10px;">ダウンロード</a>
 </div>
 
 <script>
-function draw(){
+function draw() {
   const img = document.getElementById('baseImg');
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
+
+  // Canvasのサイズは画像に合わせる
   canvas.width = img.width;
   canvas.height = img.height;
 
+  // 画像描画
+  ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.drawImage(img, 0, 0);
-  ctx.fillStyle = document.getElementById('color').value;
-  ctx.font = `${document.getElementById('size').value}px sans-serif`;
-  ctx.fillText(
-    document.getElementById('text').value,
-    parseInt(document.getElementById('x').value),
-    parseInt(document.getElementById('y').value)
-  );
 
+  // 文字情報取得
+  const text = document.getElementById('text').value;
+  const color = document.getElementById('color').value;
+  const size = parseInt(document.getElementById('size').value,10);
+  const x = parseInt(document.getElementById('x').value,10);
+  const y = parseInt(document.getElementById('y').value,10);
+  const font = document.getElementById('fontSelect').value;
+
+  // 文字描画
+  ctx.fillStyle = color;
+  ctx.font = `${size}px ${font}`;
+  ctx.textBaseline = 'top';
+  ctx.fillText(text, x, y);
+
+  // ダウンロードリンク更新
   document.getElementById('download').href = canvas.toDataURL();
 }
+
+// ページ読み込み時に初回描画
 window.onload = draw;
 </script>
 </body>
