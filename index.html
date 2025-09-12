@@ -3,77 +3,116 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>アイコン文字入れシミュレーター</title>
+<title>アイコン文字入れシミュレーター　-慌てて作ったからまだ試作だわん-</title>
 
+<!-- Google Fonts（日本語＋英字・太字多め） -->
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&family=Kosugi+Maru&family=Montserrat:wght@700&family=Poppins:wght@700&family=Roboto:wght@700&family=RocknRoll+One&display=swap" rel="stylesheet">
 
 <style>
-  :root{
-    --accent1:#5b6ef7;--accent2:#7c4bd6;
-    --card-bg:#fff;--page-bg:#f6f8fb;--text:#222;
-  }
-  body{margin:0;background:var(--page-bg);font-family:"Noto Sans JP",system-ui;}
-  header{background:linear-gradient(90deg,var(--accent1),var(--accent2));
-    color:white;text-align:center;padding:18px 12px;}
-  header h1{margin:0;font-size:1.1rem;font-weight:700;}
+:root{
+  --accent1:#5b6ef7;
+  --accent2:#7c4bd6;
+  --card-bg:#fff;
+  --page-bg:#f6f8fb;
+  --text:#222;
+}
+body{margin:0;background:var(--page-bg);font-family:"Noto Sans JP",system-ui;}
+header{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:white;text-align:center;padding:18px 12px;}
+header h1{margin:0;font-size:1.1rem;font-weight:700;}
+header .subtitle{display:block;font-size:0.8rem;margin-top:6px;color:rgba(255,255,255,0.9);font-weight:500;}
 
-  .wrap{max-width:980px;margin:18px auto;padding:0 16px;}
+.wrap{max-width:980px;margin:18px auto;padding:0 16px;}
 
-  .preview-area{background:var(--card-bg);border-radius:12px;padding:16px;
-    box-shadow:0 6px 18px rgba(20,20,40,0.06);text-align:center;margin-bottom:16px;}
-  #previewImage{max-width:100%;border-radius:10px;display:inline-block;
-    box-shadow:0 4px 18px rgba(0,0,0,0.08);}
-  .preview-note{font-size:0.9rem;color:#555;margin-top:10px;}
+/* プレビュー */
+.preview-area{
+  background:var(--card-bg);
+  border-radius:12px;
+  padding:16px;
+  box-shadow:0 6px 18px rgba(20,20,40,0.06);
+  text-align:center;
+  margin-bottom:16px;
+}
+#previewImage{
+  max-width:100%;
+  height:auto;
+  border-radius:10px;
+  display:inline-block;
+  box-shadow:0 4px 18px rgba(0,0,0,0.08);
+  touch-action: manipulation;
+  -webkit-user-select:none;
+  user-select:none;
+}
+.preview-note{font-size:0.9rem;color:#555;margin-top:10px;}
 
-  .preview-actions{display:flex;gap:12px;justify-content:center;margin:14px 0 20px;}
-  button.primary{
-    background:linear-gradient(90deg,var(--accent1),var(--accent2));
-    color:#fff;border:0;padding:12px 18px;border-radius:10px;font-size:1rem;
-    cursor:pointer;font-weight:700;
-  }
-  a.download{
-    display:inline-flex;align-items:center;justify-content:center;
-    padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none;
-    background:#111;color:#fff;
-  }
+/* プレビュー直下ボタン */
+.preview-actions{
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  margin:14px 0 20px;
+}
+button.primary{
+  background:linear-gradient(90deg,var(--accent1),var(--accent2));
+  color:#fff;border:0;padding:12px 18px;border-radius:10px;font-size:1rem;
+  cursor:pointer;font-weight:700;
+}
+a.download{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none;
+  background:#111;color:#fff;
+}
 
-  .controls{
-    background:var(--card-bg);border-radius:12px;padding:18px;
-    box-shadow:0 6px 18px rgba(20,20,40,0.06);
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;
-  }
-  .field{display:flex;flex-direction:column;}
-  .field label{font-weight:700;margin-bottom:8px;font-size:0.95rem;}
-  .field input[type="text"],.field select{
-    padding:12px 10px;font-size:1rem;border-radius:8px;
-    border:1px solid #d0d6e0;background:#fbfdff;
-  }
-
-  /* スライダー */
-  .slider-wrap{display:flex;align-items:center;gap:8px;}
-  .slider-wrap input[type="range"]{flex:1;}
-  .slider-value{width:50px;text-align:right;font-size:0.9rem;color:#333;}
-  .color-swatch{width:56px;height:44px;border-radius:8px;border:1px solid #c9cfe0;
-    overflow:hidden;background:#fff;display:inline-flex;align-items:center;justify-content:center;padding:6px;}
-  .color-swatch input[type="color"]{width:100%;height:100%;border:0;cursor:pointer;}
+/* 設定パネル */
+.controls{
+  background:var(--card-bg);
+  border-radius:12px;
+  padding:18px;
+  box-shadow:0 6px 18px rgba(20,20,40,0.06);
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:14px;
+}
+.field{display:flex;flex-direction:column;}
+.field label{font-weight:700;margin-bottom:8px;font-size:0.95rem;}
+.field input[type="text"],.field select{
+  padding:12px 10px;font-size:1rem;border-radius:8px;
+  border:1px solid #d0d6e0;background:#fbfdff;
+}
+/* スライダー */
+.slider-wrap{display:flex;align-items:center;gap:8px;}
+.slider-wrap input[type="range"]{flex:1;}
+.slider-value{width:50px;text-align:right;font-size:0.9rem;color:#333;}
+.color-swatch{width:56px;height:44px;border-radius:8px;border:1px solid #c9cfe0;
+  overflow:hidden;background:#fff;display:inline-flex;align-items:center;justify-content:center;padding:6px;}
+.color-swatch input[type="color"]{width:100%;height:100%;border:0;cursor:pointer;}
+@media (max-width:640px){
+  .controls{grid-template-columns:1fr;}
+  header h1{font-size:1rem;}
+}
+#hiddenCanvas{display:none;}
 </style>
 </head>
 <body>
 <header>
-  <h1>アイコン文字入れシミュレーター</h1>
+  <h1>アイコン文字入れシミュレーター
+    <span class="subtitle">-慌てて作ったからまだ試作だわん-</span>
+  </h1>
 </header>
 
 <div class="wrap">
+  <!-- プレビュー -->
   <div class="preview-area">
     <img id="previewImage" alt="プレビュー画像">
-    <div class="preview-note">長押しで保存できます</div>
+    <div class="preview-note">プレビューを見ながら設定してください。長押しで保存（スマホ）</div>
   </div>
 
+  <!-- プレビュー直下ボタン -->
   <div class="preview-actions">
     <button id="updateBtn" class="primary" type="button">プレビュー更新</button>
     <a id="downloadBtn" class="download" download="generated.png" href="#">ダウンロード</a>
   </div>
 
+  <!-- 設定パネル -->
   <div class="controls">
     <div class="field">
       <label for="textInput">文字</label>
@@ -94,16 +133,14 @@
       </select>
     </div>
 
-    <!-- 文字サイズスライダー -->
     <div class="field">
       <label for="sizeRange">文字サイズ (px)</label>
       <div class="slider-wrap">
-        <input id="sizeRange" type="range" min="50" max="400" value="120">
+        <input id="sizeRange" type="range" min="10" max="800" value="120">
         <span class="slider-value" id="sizeVal">120</span>
       </div>
     </div>
 
-    <!-- X座標スライダー -->
     <div class="field">
       <label for="xRange">X座標 (px)</label>
       <div class="slider-wrap">
@@ -112,7 +149,6 @@
       </div>
     </div>
 
-    <!-- Y座標スライダー -->
     <div class="field">
       <label for="yRange">Y座標 (px)</label>
       <div class="slider-wrap">
@@ -179,7 +215,7 @@ updateBtn.addEventListener('click', e => {
   drawAndUpdatePreview();
 });
 
-// スライダーの値表示更新
+// スライダー値更新
 [sizeRange,xRange,yRange].forEach(range=>{
   range.addEventListener('input', ()=>{
     sizeVal.textContent = sizeRange.value;
