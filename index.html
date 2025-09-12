@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>アイコン文字入れシミュレーター　-慌てて作ったからまだ試作だわん-</title>
 
-<!-- Google Fonts（日本語対応・ポップなフォント追加） -->
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&family=Kosugi+Maru&family=Baloo+2:wght@400;700&family=Comic+Neue:wght@400;700&family=Sawarabi+Gothic&family=Montserrat:wght@700&family=Poppins:wght@700&family=Roboto:wght@700&family=RocknRoll+One&display=swap" rel="stylesheet">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&family=M+PLUS+Rounded+1c:wght@700&family=Kosugi+Maru&family=Baloo+2:wght@700&family=Montserrat:wght@400;700&family=Lora:wght@400;700&family=Poppins:wght@700&family=Fredoka+One&display=swap" rel="stylesheet">
 
 <style>
 :root{
@@ -23,7 +23,6 @@ header .subtitle{display:block;font-size:0.8rem;margin-top:6px;color:rgba(255,25
 
 .wrap{max-width:980px;margin:18px auto;padding:0 16px;}
 
-/* プレビュー */
 .preview-area{
   background:var(--card-bg);
   border-radius:12px;
@@ -44,7 +43,6 @@ header .subtitle{display:block;font-size:0.8rem;margin-top:6px;color:rgba(255,25
 }
 .preview-note{font-size:0.9rem;color:#555;margin-top:10px;}
 
-/* プレビュー直下ボタン */
 .preview-actions{
   display:flex;
   gap:12px;
@@ -62,7 +60,6 @@ a.download{
   background:#111;color:#fff;
 }
 
-/* 設定パネル */
 .controls{
   background:var(--card-bg);
   border-radius:12px;
@@ -78,7 +75,6 @@ a.download{
   padding:12px 10px;font-size:1rem;border-radius:8px;
   border:1px solid #d0d6e0;background:#fbfdff;
 }
-/* スライダー */
 .slider-wrap{display:flex;align-items:center;gap:8px;}
 .slider-wrap input[type="range"]{flex:1;}
 .slider-value{width:50px;text-align:right;font-size:0.9rem;color:#333;}
@@ -100,19 +96,16 @@ a.download{
 </header>
 
 <div class="wrap">
-  <!-- プレビュー -->
   <div class="preview-area">
     <img id="previewImage" alt="プレビュー画像">
     <div class="preview-note">プレビューを見ながら設定してください。長押しで保存（スマホ）</div>
   </div>
 
-  <!-- プレビュー直下ボタン -->
   <div class="preview-actions">
     <button id="updateBtn" class="primary" type="button">プレビュー更新</button>
     <a id="downloadBtn" class="download" download="generated.png" href="#">ダウンロード</a>
   </div>
 
-  <!-- 設定パネル -->
   <div class="controls">
     <div class="field">
       <label for="textInput">文字</label>
@@ -122,21 +115,19 @@ a.download{
     <div class="field">
       <label for="fontSelect">書体</label>
       <select id="fontSelect">
-        <option value="Noto Sans JP">Noto Sans JP</option>
-        <option value="Noto Serif JP">Noto Serif JP</option>
-        <option value="M PLUS Rounded 1c">M PLUS Rounded 1c</option>
-        <option value="Kosugi Maru">Kosugi Maru</option>
-        <option value="Baloo 2">Baloo 2</option>
-        <option value="Comic Neue">Comic Neue</option>
-        <option value="Sawarabi Gothic">Sawarabi Gothic</option>
+        <!-- 英字 -->
         <option value="Montserrat">Montserrat</option>
+        <option value="Lora">Lora</option>
         <option value="Poppins">Poppins</option>
-        <option value="Roboto">Roboto</option>
-        <option value="RocknRoll One">RocknRoll One</option>
+        <option value="Fredoka One">Fredoka One</option>
+        <!-- 日本語 -->
+        <option value="Kosugi Maru">Kosugi Maru</option>
+        <option value="Noto Sans JP">Noto Sans JP</option>
+        <option value="Baloo 2">Baloo 2</option>
+        <option value="M PLUS Rounded 1c">M PLUS Rounded 1c</option>
       </select>
     </div>
 
-    <!-- スライダー -->
     <div class="field">
       <label for="sizeRange">文字サイズ (px)</label>
       <div class="slider-wrap">
@@ -214,19 +205,28 @@ function drawAndUpdatePreview(){
   downloadBtn.href = dataUrl;
 }
 
+// 「プレビュー更新」ボタンで手動更新
 updateBtn.addEventListener('click', e => {
   e.preventDefault();
   drawAndUpdatePreview();
 });
 
-// スライダー値更新
-[sizeRange,xRange,yRange].forEach(range=>{
+// 設定項目の変更で自動更新
+[textInput, fontSelect, sizeRange, xRange, yRange, colorInput].forEach(el => {
+  el.addEventListener('input', drawAndUpdatePreview);
+});
+
+// スライダーの値表示更新
+[sizeRange, xRange, yRange].forEach(range=>{
   range.addEventListener('input', ()=>{
     sizeVal.textContent = sizeRange.value;
     xVal.textContent = xRange.value;
     yVal.textContent = yRange.value;
   });
 });
+
+// 初回描画（サンプル文字反映）
+window.addEventListener('load', drawAndUpdatePreview);
 </script>
 </body>
 </html>
