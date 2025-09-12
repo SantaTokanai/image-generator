@@ -43,18 +43,6 @@ header .subtitle{display:block;font-size:0.8rem;margin-top:6px;color:rgba(255,25
 }
 .preview-note{font-size:0.9rem;color:#555;margin-top:10px;}
 
-.preview-actions{
-  display:flex;
-  gap:12px;
-  justify-content:center;
-  margin:14px 0 20px;
-}
-a.download{
-  display:inline-flex;align-items:center;justify-content:center;
-  padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none;
-  background:#111;color:#fff;
-}
-
 .controls{
   background:var(--card-bg);
   border-radius:12px;
@@ -76,6 +64,17 @@ a.download{
 .color-swatch{width:56px;height:44px;border-radius:8px;border:1px solid #c9cfe0;
   overflow:hidden;background:#fff;display:inline-flex;align-items:center;justify-content:center;padding:6px;}
 .color-swatch input[type="color"]{width:100%;height:100%;border:0;cursor:pointer;}
+
+.download-area{
+  text-align:center;
+  margin:20px 0;
+}
+a.download{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none;
+  background:#111;color:#fff;
+}
+
 @media (max-width:640px){
   .controls{grid-template-columns:1fr;}
   header h1{font-size:1rem;}
@@ -95,11 +94,6 @@ a.download{
   <div class="preview-area">
     <img id="previewImage" alt="プレビュー画像">
     <div class="preview-note">プレビューを見ながら設定してください。長押しで保存（スマホ）</div>
-  </div>
-
-  <!-- ダウンロードボタン -->
-  <div class="preview-actions">
-    <a id="downloadBtn" class="download" download="generated.png" href="#">ダウンロード</a>
   </div>
 
   <!-- 設定パネル -->
@@ -155,6 +149,11 @@ a.download{
         <input id="colorInput" type="color" value="#ff0000">
       </div>
     </div>
+  </div>
+
+  <!-- ダウンロードボタン -->
+  <div class="download-area">
+    <a id="downloadBtn" class="download" download="generated.png" href="#">ダウンロード</a>
   </div>
 </div>
 
