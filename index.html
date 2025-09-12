@@ -19,14 +19,35 @@ header {
   background:#333;
   color:#fff;
   text-align:center;
-  padding:1.2rem;
+  padding:1rem 0 0.6rem;
+  letter-spacing:0.05em;
+}
+header h1 {
+  margin:0;
   font-size:1.4rem;
   font-weight:bold;
-  letter-spacing:0.05em;
+}
+header .subtitle {
+  display:block;
+  font-size:0.9rem;   /* サブタイトル小さめ */
+  margin-top:0.2rem;
+  color:#ddd;
+}
+.top-image {
+  text-align:center;
+  background:#fff;
+  padding:1rem;
+  margin-bottom:1rem;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+.top-image img {
+  max-width:95%;
+  height:auto;
+  border-radius:0.5rem;
 }
 .container {
   max-width:1200px;
-  margin:1.5rem auto;
+  margin:0 auto 1.5rem;
   display:flex;
   flex-wrap:wrap;
   gap:1.5rem;
@@ -83,7 +104,16 @@ header {
 </style>
 </head>
 <body>
-<header>アイコン文字入れシミュレーター　-慌てて作ったからまだ試作だわん-</header>
+<header>
+  <h1>アイコン文字入れシミュレーター
+    <span class="subtitle">-慌てて作ったからまだ試作だわん-</span>
+  </h1>
+</header>
+
+<!-- デフォルト画像を上部に常時表示 -->
+<div class="top-image">
+  <img src="base.png" alt="ベース画像">
+</div>
 
 <div class="container">
   <div class="controls">
@@ -112,9 +142,6 @@ header {
     <label class="color-label">文字色
       <input type="color" id="colorInput" value="#ff0000">
     </label>
-
-    <label>背景画像 (PNG/JPG)</label>
-    <input type="file" id="bgUpload" accept="image/*">
   </div>
 
   <div class="preview-box">
@@ -130,16 +157,16 @@ const sizeInput = document.getElementById('sizeInput');
 const xInput = document.getElementById('xInput');
 const yInput = document.getElementById('yInput');
 const colorInput = document.getElementById('colorInput');
-const bgUpload = document.getElementById('bgUpload');
 const canvas = document.getElementById('previewCanvas');
 const ctx = canvas.getContext('2d');
 
+// GitHub Pagesにある base.png を固定
 let bgImage = new Image();
-bgImage.src = 'sample.png'; // ここを自分の初期画像に差し替えてください
+bgImage.src = 'base.png';
 
 function draw(){
   if(!bgImage.complete) return;
-  canvas.width = bgImage.width * 0.6; // 表示サイズを60%に縮小
+  canvas.width = bgImage.width * 0.6;
   canvas.height = bgImage.height * 0.6;
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.drawImage(bgImage,0,0,canvas.width,canvas.height);
@@ -153,22 +180,9 @@ function draw(){
   el.addEventListener('input',draw);
 });
 
-bgUpload.addEventListener('change', e=>{
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    bgImage = new Image();
-    bgImage.onload = draw;
-    bgImage.src = ev.target.result;
-  };
-  reader.readAsDataURL(file);
-});
-
 bgImage.onload = draw;
 
 canvas.addEventListener('click',()=>{
-  // 拡大画像を新しいタブで開く
   const link = document.createElement('a');
   link.href = canvas.toDataURL('image/png');
   link.target = '_blank';
