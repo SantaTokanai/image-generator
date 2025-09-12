@@ -1,191 +1,267 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>アイコン文字入れシミュレーター　-慌てて作ったからまだ試作だわん-</title>
 
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Kosugi+Maru&family=Zen+Maru+Gothic:wght@500;700&family=RocknRoll+One&family=Roboto:wght@700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+<!-- Google Fonts（日本語＋英字・太字多め） -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&family=Kosugi+Maru&family=Montserrat:wght@700&family=Poppins:wght@700&family=Roboto:wght@700&family=RocknRoll+One&display=swap" rel="stylesheet">
 
 <style>
-body {
-  background:#f4f4f4;
-  font-family:'Noto Sans JP', sans-serif;
-  margin:0;
-  padding:0;
-}
-header {
-  background:#333;
-  color:#fff;
-  text-align:center;
-  padding:1rem 0 0.6rem;
-  letter-spacing:0.05em;
-}
-header h1 {
-  margin:0;
-  font-size:1.4rem;
-  font-weight:bold;
-}
-header .subtitle {
-  display:block;
-  font-size:0.9rem;
-  margin-top:0.2rem;
-  color:#ddd;
-}
-.container {
-  max-width:1200px;
-  margin:1.5rem auto;
-  display:flex;
-  flex-wrap:wrap;
-  gap:1.5rem;
-  justify-content:center;
-  padding:0 1rem;
-}
-.controls {
-  flex:1 1 360px;
-  background:#fff;
-  padding:1.5rem;
-  border-radius:1rem;
-  box-shadow:0 4px 12px rgba(0,0,0,0.1);
-}
-.controls label {
-  display:block;
-  margin-top:1rem;
-  font-weight:600;
-  font-size:1.1rem;
-}
-.controls input[type="text"],
-.controls input[type="number"],
-.controls select,
-.controls input[type="color"] {
-  width:100%;
-  font-size:1rem;
-  padding:0.5rem;
-  margin-top:0.4rem;
-  border:1px solid #ccc;
-  border-radius:0.5rem;
-}
-.update-btn {
-  margin-top:1.5rem;
-  width:100%;
-  padding:0.8rem;
-  font-size:1.1rem;
-  font-weight:bold;
-  color:#fff;
-  background:#333;
-  border:none;
-  border-radius:0.6rem;
-  cursor:pointer;
-}
-.update-btn:hover {
-  background:#555;
-}
-.preview-box {
-  flex:1 1 420px;
-  background:#fff;
-  padding:1rem;
-  border-radius:1rem;
-  box-shadow:0 4px 12px rgba(0,0,0,0.1);
-  text-align:center;
-}
-.preview-box a {
-  display:inline-block;
-  text-decoration:none;
-}
-.preview-box canvas {
-  max-width:100%;
-  height:auto;
-  border-radius:0.5rem;
-}
-.color-label {
-  display:flex;
-  align-items:center;
-  gap:0.5rem;
-}
+  :root{
+    --accent1: #5b6ef7;
+    --accent2: #7c4bd6;
+    --card-bg: #ffffff;
+    --page-bg: #f6f8fb;
+    --text: #222;
+  }
+  html,body{height:100%;margin:0;padding:0;background:var(--page-bg);color:var(--text);font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;}
+  header{
+    background:linear-gradient(90deg,var(--accent1),var(--accent2));
+    color:white;
+    padding:18px 12px;
+    text-align:center;
+  }
+  header h1{margin:0;font-size:1.15rem;font-weight:700;letter-spacing:0.02em;}
+  header .subtitle{display:block;font-size:0.82rem;color:rgba(255,255,255,0.9);margin-top:6px;font-weight:500;}
+
+  .wrap{max-width:980px;margin:18px auto;padding:0 16px;box-sizing:border-box;}
+
+  /* プレビュー（上部） */
+  .preview-area{
+    background:var(--card-bg);
+    border-radius:12px;
+    padding:16px;
+    box-shadow:0 6px 18px rgba(20,20,40,0.06);
+    text-align:center;
+    margin-bottom:16px;
+  }
+  #previewImage{
+    max-width:100%;
+    height:auto;
+    border-radius:10px;
+    display:inline-block;
+    box-shadow:0 4px 18px rgba(0,0,0,0.08);
+    touch-action: manipulation;
+    -webkit-user-select:none;
+    user-select:none;
+  }
+  .preview-note{font-size:0.9rem;color:#555;margin-top:10px;}
+
+  /* コントロールカード */
+  .controls{
+    background:var(--card-bg);
+    border-radius:12px;
+    padding:18px;
+    box-shadow:0 6px 18px rgba(20,20,40,0.06);
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:14px;
+    align-items:start;
+  }
+  .field{display:flex;flex-direction:column;}
+  .field label{font-weight:700;margin-bottom:8px;font-size:0.96rem;}
+  .field input[type="text"], .field input[type="number"], .field select{
+    padding:12px 10px;font-size:1rem;border-radius:8px;border:1px solid #d0d6e0;background:#fbfdff;
+  }
+  .field input[type="number"]{width:100%;}
+  /* 色入力を大きく見やすく */
+  .color-row{display:flex;gap:10px;align-items:center;}
+  .color-swatch{
+    width:56px;height:44px;border-radius:8px;border:1px solid #c9cfe0;overflow:hidden;background:#fff;
+    display:inline-flex;align-items:center;justify-content:center;padding:6px;
+  }
+  .color-swatch input[type="color"]{
+    -webkit-appearance:none;border:0;background:transparent;width:100%;height:100%;cursor:pointer;
+  }
+  /* ボタン群 */
+  .actions{grid-column:1/-1;display:flex;gap:12px;justify-content:center;margin-top:6px;}
+  button.primary{
+    background:linear-gradient(90deg,var(--accent1),var(--accent2));
+    color:#fff;border:0;padding:12px 18px;border-radius:10px;font-size:1rem;cursor:pointer;font-weight:700;
+    box-shadow:0 6px 16px rgba(92,94,252,0.18);
+  }
+  a.download{
+    display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none;background:#111;color:#fff;
+  }
+  /* レスポンシブ微調整 */
+  @media (max-width:640px){
+    .controls{grid-template-columns:1fr;}
+    header h1{font-size:1rem;}
+  }
+  /* hidden canvas offscreen */
+  #hiddenCanvas{display:none;}
 </style>
 </head>
 <body>
-<header>
-  <h1>アイコン文字入れシミュレーター
-    <span class="subtitle">-慌てて作ったからまだ試作だわん-</span>
-  </h1>
-</header>
+  <header>
+    <h1>アイコン文字入れシミュレーター
+      <span class="subtitle">-慌てて作ったからまだ試作だわん-</span>
+    </h1>
+  </header>
 
-<div class="container">
-  <div class="controls">
-    <label>文字</label>
-    <input type="text" id="textInput" value="サンプル文字">
+  <div class="wrap">
+    <!-- プレビュー画像（上部表示） -->
+    <div class="preview-area">
+      <!-- 画像要素は常に表示。スマホで長押し→写真に保存ができる -->
+      <img id="previewImage" alt="プレビュー画像">
+      <div class="preview-note">プレビューを見ながら下の設定で調整してください。プレビューを長押しで保存できます（スマホ）。</div>
+    </div>
 
-    <label>書体</label>
-    <select id="fontSelect">
-      <option value="Noto Sans JP">Noto Sans JP（標準）</option>
-      <option value="Zen Maru Gothic">Zen Maru Gothic（丸ゴシック）</option>
-      <option value="Kosugi Maru">Kosugi Maru（丸文字）</option>
-      <option value="RocknRoll One">RocknRoll One（太字・おしゃれ）</option>
-      <option value="Roboto">Roboto Bold（英字）</option>
-      <option value="Montserrat">Montserrat Bold（英字）</option>
-    </select>
+    <!-- 設定パネル -->
+    <div class="controls">
+      <div class="field">
+        <label for="textInput">文字</label>
+        <input id="textInput" type="text" value="サンプル文字" />
+      </div>
 
-    <label>文字サイズ(px)</label>
-    <input type="number" id="sizeInput" value="120">
+      <div class="field">
+        <label for="fontSelect">書体</label>
+        <select id="fontSelect">
+          <!-- 値はフォントファミリー名（canvasで使います） -->
+          <option value="Noto Sans JP">Noto Sans JP（標準）</option>
+          <option value="Noto Serif JP">Noto Serif JP（セリフ）</option>
+          <option value="M PLUS Rounded 1c">M PLUS Rounded 1c（丸み）</option>
+          <option value="Kosugi Maru">Kosugi Maru（カジュアル）</option>
+          <option value="Montserrat">Montserrat（太字・英字向け）</option>
+          <option value="Poppins">Poppins（太字・英字）</option>
+          <option value="Roboto">Roboto（太字・英字）</option>
+          <option value="RocknRoll One">RocknRoll One（ポップ）</option>
+        </select>
+      </div>
 
-    <label>X座標(px)</label>
-    <input type="number" id="xInput" value="200">
+      <div class="field">
+        <label for="sizeInput">文字サイズ (px)</label>
+        <input id="sizeInput" type="number" min="6" max="800" value="120" />
+      </div>
 
-    <label>Y座標(px)</label>
-    <input type="number" id="yInput" value="600">
+      <div class="field">
+        <label for="xInput">X座標 (px)</label>
+        <input id="xInput" type="number" min="0" value="200" />
+      </div>
 
-    <label class="color-label">文字色
-      <input type="color" id="colorInput" value="#ff0000">
-    </label>
+      <div class="field">
+        <label for="yInput">Y座標 (px)</label>
+        <input id="yInput" type="number" min="0" value="600" />
+      </div>
 
-    <button class="update-btn" id="updateBtn">プレビュー更新</button>
+      <div class="field">
+        <label>文字色</label>
+        <div class="color-row">
+          <div class="color-swatch">
+            <input id="colorInput" type="color" value="#ff0000" />
+          </div>
+          <div style="font-size:0.95rem;color:#555;">選択した色をプレビューに反映</div>
+        </div>
+      </div>
+
+      <!-- アクション -->
+      <div class="actions">
+        <button id="updateBtn" class="primary" type="button">プレビュー更新</button>
+        <!-- PC向け直接DLボタン（ダウンロード属性で保存） -->
+        <a id="downloadBtn" class="download" download="generated.png" href="#">ダウンロード</a>
+      </div>
+    </div>
   </div>
 
-  <div class="preview-box">
-    <!-- aタグで囲み download 属性を付与 -->
-    <a id="downloadLink" href="#" download="generated.png">
-      <canvas id="previewCanvas"></canvas>
-    </a>
-    <p>※プレビューを長押しで保存（スマホ）／クリックでダウンロード（PC）</p>
-  </div>
-</div>
+  <!-- hidden canvas（高解像度で描画し、画像データを作る） -->
+  <canvas id="hiddenCanvas"></canvas>
 
 <script>
+/*
+  実装のポイント：
+  - base.png（同階層）を読み込み、hiddenCanvas に元解像度で描画する。
+  - プレビュー表示は canvas.toDataURL() を <img id="previewImage"> に反映して表示。
+  - 「プレビュー更新」ボタンで明示的に更新（要件どおり）。
+  - スマホで画像を長押し→写真アプリに保存できるように、プレビューは <img> で表示する。
+  - PC向けは「ダウンロード」リンクを更新して直接ダウンロードできる。
+*/
+
+const baseSrc = 'base.png'; // ← GitHub リポジトリに配置済みの base.png
+
+const previewImage = document.getElementById('previewImage');
+const hiddenCanvas = document.getElementById('hiddenCanvas');
+const ctx = hiddenCanvas.getContext('2d');
+
 const textInput = document.getElementById('textInput');
 const fontSelect = document.getElementById('fontSelect');
 const sizeInput = document.getElementById('sizeInput');
 const xInput = document.getElementById('xInput');
 const yInput = document.getElementById('yInput');
 const colorInput = document.getElementById('colorInput');
-const canvas = document.getElementById('previewCanvas');
-const ctx = canvas.getContext('2d');
 const updateBtn = document.getElementById('updateBtn');
-const downloadLink = document.getElementById('downloadLink');
+const downloadBtn = document.getElementById('downloadBtn');
 
-let bgImage = new Image();
-bgImage.src = 'base.png';  // 固定ベース画像
+let baseImg = new Image();
+baseImg.src = baseSrc;
+baseImg.onload = () => {
+  // 初期描画（デフォルトで「サンプル文字」を反映）
+  drawAndUpdatePreview();
+};
 
-function draw(){
-  if(!bgImage.complete) return;
-  canvas.width = bgImage.width * 0.6;
-  canvas.height = bgImage.height * 0.6;
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.drawImage(bgImage,0,0,canvas.width,canvas.height);
-  ctx.font = `${sizeInput.value}px '${fontSelect.value}'`;
-  ctx.fillStyle = colorInput.value;
+// 描画関数（高解像度：canvas = 元画像サイズ）
+function drawToCanvas(){
+  if(!baseImg.complete) return;
+  // internal canvas = original image size
+  hiddenCanvas.width = baseImg.naturalWidth || baseImg.width;
+  hiddenCanvas.height = baseImg.naturalHeight || baseImg.height;
+
+  // 背景画像を高解像度で描画
+  ctx.clearRect(0,0,hiddenCanvas.width,hiddenCanvas.height);
+  ctx.drawImage(baseImg, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+
+  // テキスト設定（フォント名を安全に使う）
+  const fontFamily = fontSelect.value;
+  const size = Math.max(6, parseInt(sizeInput.value || 120, 10));
+  // canvas で日本語＋英字ともに落ちないよう、フォント名を引用して汎用フォールバックを指定
   ctx.textBaseline = 'top';
-  ctx.fillText(textInput.value, parseInt(xInput.value), parseInt(yInput.value));
-  // aタグのhrefを更新してダウンロード可能に
-  downloadLink.href = canvas.toDataURL('image/png');
+  ctx.fillStyle = colorInput.value || '#000';
+  // 例: '120px "Noto Sans JP", sans-serif'
+  ctx.font = `${size}px "${fontFamily}", sans-serif`;
+
+  // 描画（座標はそのまま px 単位：元画像の座標系）
+  const x = parseInt(xInput.value || 0, 10);
+  const y = parseInt(yInput.value || 0, 10);
+  ctx.fillText(textInput.value || '', x, y);
 }
 
-// 初期描画
-bgImage.onload = draw;
+// プレビュー更新＆ダウンロードリンク更新
+function drawAndUpdatePreview(){
+  drawToCanvas();
+  // プレビューに表示するのはデータURL -> <img> の src にセットすることで、スマホで長押し可能に
+  const dataUrl = hiddenCanvas.toDataURL('image/png');
+  previewImage.src = dataUrl;
 
-// ボタンで更新
-updateBtn.addEventListener('click', draw);
+  // ダウンロードリンクも更新（PC向け）
+  downloadBtn.href = dataUrl;
+}
+
+// 初期ボタン反応：明示的に「プレビュー更新」で反映する仕様
+updateBtn.addEventListener('click', (e)=>{
+  e.preventDefault();
+  drawAndUpdatePreview();
+});
+
+// クリックでフルサイズ（新タブ）表示（PCでの素早い確認に便利）
+previewImage.addEventListener('click', ()=>{
+  // 新しいタブでフルサイズの画像を表示（長押し保存とは干渉しない）
+  const url = hiddenCanvas.toDataURL('image/png');
+  window.open(url, '_blank');
+});
+
+// optional: Enterキーで更新（入力中にEnterで更新したい場合）
+[textInput, sizeInput, xInput, yInput].forEach(el=>{
+  el.addEventListener('keydown', function(ev){
+    if(ev.key === 'Enter') {
+      ev.preventDefault();
+      drawAndUpdatePreview();
+    }
+  });
+});
+
+// フォントの読み込みが遅い場合に備え、フォントが読み込まれてから確実に描画したい場合は
+// font loading API を使うこともできますが（ブラウザ互換注意）、ここでは単純に baseImg.onload で描画します.
 </script>
 </body>
 </html>
