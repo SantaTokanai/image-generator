@@ -3,168 +3,134 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>アイコン文字入れシミュレーター　-慌てて作ったからまだ試作だわん-</title>
+<title>アイコン文字入れシミュレーター</title>
 
-<!-- Google Fonts（日本語＋英字・太字多め） -->
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&family=Kosugi+Maru&family=Montserrat:wght@700&family=Poppins:wght@700&family=Roboto:wght@700&family=RocknRoll+One&display=swap" rel="stylesheet">
 
 <style>
   :root{
-    --accent1: #5b6ef7;
-    --accent2: #7c4bd6;
-    --card-bg: #ffffff;
-    --page-bg: #f6f8fb;
-    --text: #222;
+    --accent1:#5b6ef7;--accent2:#7c4bd6;
+    --card-bg:#fff;--page-bg:#f6f8fb;--text:#222;
   }
-  html,body{height:100%;margin:0;padding:0;background:var(--page-bg);color:var(--text);font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;}
-  header{
-    background:linear-gradient(90deg,var(--accent1),var(--accent2));
-    color:white;
-    padding:18px 12px;
-    text-align:center;
-  }
-  header h1{margin:0;font-size:1.15rem;font-weight:700;letter-spacing:0.02em;}
-  header .subtitle{display:block;font-size:0.82rem;color:rgba(255,255,255,0.9);margin-top:6px;font-weight:500;}
+  body{margin:0;background:var(--page-bg);font-family:"Noto Sans JP",system-ui;}
+  header{background:linear-gradient(90deg,var(--accent1),var(--accent2));
+    color:white;text-align:center;padding:18px 12px;}
+  header h1{margin:0;font-size:1.1rem;font-weight:700;}
 
-  .wrap{max-width:980px;margin:18px auto;padding:0 16px;box-sizing:border-box;}
+  .wrap{max-width:980px;margin:18px auto;padding:0 16px;}
 
-  /* プレビュー */
-  .preview-area{
-    background:var(--card-bg);
-    border-radius:12px;
-    padding:16px;
-    box-shadow:0 6px 18px rgba(20,20,40,0.06);
-    text-align:center;
-    margin-bottom:16px;
-  }
-  #previewImage{
-    max-width:100%;
-    height:auto;
-    border-radius:10px;
-    display:inline-block;
-    box-shadow:0 4px 18px rgba(0,0,0,0.08);
-    touch-action: manipulation;
-    -webkit-user-select:none;
-    user-select:none;
-  }
+  .preview-area{background:var(--card-bg);border-radius:12px;padding:16px;
+    box-shadow:0 6px 18px rgba(20,20,40,0.06);text-align:center;margin-bottom:16px;}
+  #previewImage{max-width:100%;border-radius:10px;display:inline-block;
+    box-shadow:0 4px 18px rgba(0,0,0,0.08);}
   .preview-note{font-size:0.9rem;color:#555;margin-top:10px;}
 
-  /* ボタン群（プレビュー直下） */
-  .preview-actions{
-    display:flex;
-    gap:12px;
-    justify-content:center;
-    margin:14px 0 20px 0;
-  }
+  .preview-actions{display:flex;gap:12px;justify-content:center;margin:14px 0 20px;}
   button.primary{
     background:linear-gradient(90deg,var(--accent1),var(--accent2));
-    color:#fff;border:0;padding:12px 18px;border-radius:10px;font-size:1rem;cursor:pointer;font-weight:700;
-    box-shadow:0 6px 16px rgba(92,94,252,0.18);
+    color:#fff;border:0;padding:12px 18px;border-radius:10px;font-size:1rem;
+    cursor:pointer;font-weight:700;
   }
   a.download{
-    display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none;background:#111;color:#fff;
+    display:inline-flex;align-items:center;justify-content:center;
+    padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none;
+    background:#111;color:#fff;
   }
 
-  /* 設定パネル */
   .controls{
-    background:var(--card-bg);
-    border-radius:12px;
-    padding:18px;
+    background:var(--card-bg);border-radius:12px;padding:18px;
     box-shadow:0 6px 18px rgba(20,20,40,0.06);
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:14px;
-    align-items:start;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;
   }
   .field{display:flex;flex-direction:column;}
-  .field label{font-weight:700;margin-bottom:8px;font-size:0.96rem;}
-  .field input[type="text"], .field input[type="number"], .field select{
-    padding:12px 10px;font-size:1rem;border-radius:8px;border:1px solid #d0d6e0;background:#fbfdff;
+  .field label{font-weight:700;margin-bottom:8px;font-size:0.95rem;}
+  .field input[type="text"],.field select{
+    padding:12px 10px;font-size:1rem;border-radius:8px;
+    border:1px solid #d0d6e0;background:#fbfdff;
   }
-  .field input[type="number"]{width:100%;}
-  .color-row{display:flex;gap:10px;align-items:center;}
-  .color-swatch{
-    width:56px;height:44px;border-radius:8px;border:1px solid #c9cfe0;overflow:hidden;background:#fff;
-    display:inline-flex;align-items:center;justify-content:center;padding:6px;
-  }
-  .color-swatch input[type="color"]{
-    -webkit-appearance:none;border:0;background:transparent;width:100%;height:100%;cursor:pointer;
-  }
-  @media (max-width:640px){
-    .controls{grid-template-columns:1fr;}
-    header h1{font-size:1rem;}
-  }
-  #hiddenCanvas{display:none;}
+
+  /* スライダー */
+  .slider-wrap{display:flex;align-items:center;gap:8px;}
+  .slider-wrap input[type="range"]{flex:1;}
+  .slider-value{width:50px;text-align:right;font-size:0.9rem;color:#333;}
+  .color-swatch{width:56px;height:44px;border-radius:8px;border:1px solid #c9cfe0;
+    overflow:hidden;background:#fff;display:inline-flex;align-items:center;justify-content:center;padding:6px;}
+  .color-swatch input[type="color"]{width:100%;height:100%;border:0;cursor:pointer;}
 </style>
 </head>
 <body>
-  <header>
-    <h1>アイコン文字入れシミュレーター
-      <span class="subtitle">-慌てて作ったからまだ試作だわん-</span>
-    </h1>
-  </header>
+<header>
+  <h1>アイコン文字入れシミュレーター</h1>
+</header>
 
-  <div class="wrap">
-    <!-- プレビュー -->
-    <div class="preview-area">
-      <img id="previewImage" alt="プレビュー画像">
-      <div class="preview-note">プレビューを見ながら設定してください。長押しで保存（スマホ）。</div>
+<div class="wrap">
+  <div class="preview-area">
+    <img id="previewImage" alt="プレビュー画像">
+    <div class="preview-note">長押しで保存できます</div>
+  </div>
+
+  <div class="preview-actions">
+    <button id="updateBtn" class="primary" type="button">プレビュー更新</button>
+    <a id="downloadBtn" class="download" download="generated.png" href="#">ダウンロード</a>
+  </div>
+
+  <div class="controls">
+    <div class="field">
+      <label for="textInput">文字</label>
+      <input id="textInput" type="text" value="サンプル文字">
     </div>
 
-    <!-- ★ プレビュー直下にボタンを配置 -->
-    <div class="preview-actions">
-      <button id="updateBtn" class="primary" type="button">プレビュー更新</button>
-      <a id="downloadBtn" class="download" download="generated.png" href="#">ダウンロード</a>
+    <div class="field">
+      <label for="fontSelect">書体</label>
+      <select id="fontSelect">
+        <option value="Noto Sans JP">Noto Sans JP</option>
+        <option value="Noto Serif JP">Noto Serif JP</option>
+        <option value="M PLUS Rounded 1c">M PLUS Rounded 1c</option>
+        <option value="Kosugi Maru">Kosugi Maru</option>
+        <option value="Montserrat">Montserrat</option>
+        <option value="Poppins">Poppins</option>
+        <option value="Roboto">Roboto</option>
+        <option value="RocknRoll One">RocknRoll One</option>
+      </select>
     </div>
 
-    <!-- 設定パネル -->
-    <div class="controls">
-      <div class="field">
-        <label for="textInput">文字</label>
-        <input id="textInput" type="text" value="サンプル文字" />
+    <!-- 文字サイズスライダー -->
+    <div class="field">
+      <label for="sizeRange">文字サイズ (px)</label>
+      <div class="slider-wrap">
+        <input id="sizeRange" type="range" min="10" max="800" value="120">
+        <span class="slider-value" id="sizeVal">120</span>
       </div>
+    </div>
 
-      <div class="field">
-        <label for="fontSelect">書体</label>
-        <select id="fontSelect">
-          <option value="Noto Sans JP">Noto Sans JP</option>
-          <option value="Noto Serif JP">Noto Serif JP</option>
-          <option value="M PLUS Rounded 1c">M PLUS Rounded 1c</option>
-          <option value="Kosugi Maru">Kosugi Maru</option>
-          <option value="Montserrat">Montserrat</option>
-          <option value="Poppins">Poppins</option>
-          <option value="Roboto">Roboto</option>
-          <option value="RocknRoll One">RocknRoll One</option>
-        </select>
+    <!-- X座標スライダー -->
+    <div class="field">
+      <label for="xRange">X座標 (px)</label>
+      <div class="slider-wrap">
+        <input id="xRange" type="range" min="0" max="1000" value="200">
+        <span class="slider-value" id="xVal">200</span>
       </div>
+    </div>
 
-      <div class="field">
-        <label for="sizeInput">文字サイズ (px)</label>
-        <input id="sizeInput" type="number" min="6" max="800" value="100" />
+    <!-- Y座標スライダー -->
+    <div class="field">
+      <label for="yRange">Y座標 (px)</label>
+      <div class="slider-wrap">
+        <input id="yRange" type="range" min="0" max="1000" value="600">
+        <span class="slider-value" id="yVal">600</span>
       </div>
+    </div>
 
-      <div class="field">
-        <label for="xInput">X座標 (px)</label>
-        <input id="xInput" type="number" min="0" value="200" />
-      </div>
-
-      <div class="field">
-        <label for="yInput">Y座標 (px)</label>
-        <input id="yInput" type="number" min="0" value="600" />
-      </div>
-
-      <div class="field">
-        <label>文字色</label>
-        <div class="color-row">
-          <div class="color-swatch">
-            <input id="colorInput" type="color" value="#ff0000" />
-          </div>
-        </div>
+    <div class="field">
+      <label>文字色</label>
+      <div class="color-swatch">
+        <input id="colorInput" type="color" value="#ff0000">
       </div>
     </div>
   </div>
+</div>
 
-  <canvas id="hiddenCanvas"></canvas>
+<canvas id="hiddenCanvas"></canvas>
 
 <script>
 const baseSrc = 'base.png';
@@ -174,32 +140,31 @@ const ctx = hiddenCanvas.getContext('2d');
 
 const textInput = document.getElementById('textInput');
 const fontSelect = document.getElementById('fontSelect');
-const sizeInput = document.getElementById('sizeInput');
-const xInput = document.getElementById('xInput');
-const yInput = document.getElementById('yInput');
+const sizeRange = document.getElementById('sizeRange');
+const xRange = document.getElementById('xRange');
+const yRange = document.getElementById('yRange');
+const sizeVal = document.getElementById('sizeVal');
+const xVal = document.getElementById('xVal');
+const yVal = document.getElementById('yVal');
 const colorInput = document.getElementById('colorInput');
 const updateBtn = document.getElementById('updateBtn');
 const downloadBtn = document.getElementById('downloadBtn');
 
 let baseImg = new Image();
 baseImg.src = baseSrc;
-baseImg.onload = () => drawAndUpdatePreview();
+baseImg.onload = drawAndUpdatePreview;
 
 function drawToCanvas(){
   hiddenCanvas.width = baseImg.naturalWidth || baseImg.width;
   hiddenCanvas.height = baseImg.naturalHeight || baseImg.height;
 
   ctx.clearRect(0,0,hiddenCanvas.width,hiddenCanvas.height);
-  ctx.drawImage(baseImg, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+  ctx.drawImage(baseImg,0,0,hiddenCanvas.width,hiddenCanvas.height);
 
-  const fontFamily = fontSelect.value;
-  const size = Math.max(6, parseInt(sizeInput.value||120,10));
   ctx.textBaseline = 'top';
   ctx.fillStyle = colorInput.value;
-  ctx.font = `${size}px "${fontFamily}", sans-serif`;
-  const x = parseInt(xInput.value||0,10);
-  const y = parseInt(yInput.value||0,10);
-  ctx.fillText(textInput.value || '', x, y);
+  ctx.font = `${sizeRange.value}px "${fontSelect.value}", sans-serif`;
+  ctx.fillText(textInput.value, parseInt(xRange.value,10), parseInt(yRange.value,10));
 }
 
 function drawAndUpdatePreview(){
@@ -214,9 +179,13 @@ updateBtn.addEventListener('click', e => {
   drawAndUpdatePreview();
 });
 
-previewImage.addEventListener('click', () => {
-  const url = hiddenCanvas.toDataURL('image/png');
-  window.open(url, '_blank');
+// スライダーの値表示更新
+[sizeRange,xRange,yRange].forEach(range=>{
+  range.addEventListener('input', ()=>{
+    sizeVal.textContent = sizeRange.value;
+    xVal.textContent = xRange.value;
+    yVal.textContent = yRange.value;
+  });
 });
 </script>
 </body>
