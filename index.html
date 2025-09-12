@@ -2,13 +2,13 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>おしゃれ画像生成シミュレーター</title>
+<title>アイコン文字入れシミュレーター</title>
 
 <!-- 日本語対応 Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&family=M+PLUS+Rounded+1c&family=Noto+Sans+JP&family=Noto+Serif+JP&display=swap" rel="stylesheet">
 
 <style>
-/* 全体レイアウト */
+/* ===== 全体レイアウト ===== */
 body {
   font-family: 'Noto Sans JP', sans-serif;
   background: #f0f2f5;
@@ -22,43 +22,43 @@ h1 {
   padding: 20px;
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: #fff;
-  font-size: 28px;
+  font-size: 26px;
   margin: 0 0 20px 0;
   letter-spacing: 1px;
 }
 
-/* 中央コンテナ */
 .container {
   max-width: 900px;
   margin: auto;
-  padding: 20px;
+  padding: 0 20px 40px;
 }
 
-/* プレビュー */
+/* ===== プレビューエリア ===== */
 .preview-area {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 25px;
 }
 
 canvas {
   border-radius: 12px;
-  border: 2px solid #ddd;
+  border: 2px solid #ccc;
   max-width: 100%;
   height: auto;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  background: #fff;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.1);
 }
 
-/* コントロールパネル */
+/* ===== コントロールパネル ===== */
 .controls {
   background: #fff;
   border-radius: 12px;
   padding: 25px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  display: grid;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
   gap: 20px;
 }
 
-/* ラベルと入力 */
 .controls label {
   display: block;
   font-weight: 600;
@@ -66,23 +66,26 @@ canvas {
   font-size: 16px;
 }
 
+/* 入力系共通 */
 .controls input[type="text"],
 .controls input[type="number"],
-.controls select,
-.controls input[type="color"] {
+.controls select {
   width: 100%;
-  padding: 12px 14px;
-  border: 1px solid #ccc;
+  padding: 12px;
+  border: 1px solid #bbb;
   border-radius: 8px;
   font-size: 18px;
   background: #fafafa;
-  transition: border-color 0.2s;
+  box-sizing: border-box;
 }
 
-.controls input:focus,
-.controls select:focus {
-  border-color: #667eea;
-  outline: none;
+.controls input[type="color"] {
+  width: 100%;
+  height: 50px;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #fff;
 }
 
 /* ボタン */
@@ -113,24 +116,21 @@ a#download:hover {
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-/* レスポンシブ */
+/* スマホ対応 */
 @media (max-width: 600px) {
-  .controls {
-    padding: 15px;
-  }
-  h1 {
-    font-size: 22px;
-  }
+  h1 { font-size: 22px; }
+  .controls { padding: 15px; }
 }
 </style>
 </head>
 <body>
-<h1>おしゃれ画像生成シミュレーター</h1>
+<h1>アイコン文字入れシミュレーター</h1>
 
 <div class="container">
-
   <div class="preview-area">
-    <img id="baseImg" src="base.png" alt="Base" style="display:none;">
+    <!-- 元画像を読み込む（非表示） -->
+    <img id="baseImg" src="base.png" alt="Base Image" style="display:none;">
+    <!-- ここに合成プレビューを表示 -->
     <canvas id="canvas" width="800" height="600"></canvas>
   </div>
 
@@ -150,7 +150,7 @@ a#download:hover {
       <input type="number" id="size" value="120" min="10" max="300">
     </div>
 
-    <div style="display: flex; gap: 20px;">
+    <div style="display:flex; gap:20px;">
       <div style="flex:1;">
         <label for="x">X座標</label>
         <input type="number" id="x" value="200">
@@ -172,4 +172,46 @@ a#download:hover {
     </div>
 
     <div class="btn-row">
-      <button onc
+      <button onclick="draw()">プレビュー更新</button>
+      <a id="download" download="generated.png">ダウンロード</a>
+    </div>
+  </div>
+</div>
+
+<script>
+function draw() {
+  const img = document.getElementById('baseImg');
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+
+  // 画像がまだ読み込まれていない場合の対策
+  if (!img.complete) {
+    img.onload = draw;
+    return;
+  }
+
+  canvas.width = img.width;
+  canvas.height = img.height;
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.drawImage(img, 0, 0);
+
+  const text  = document.getElementById('text').value;
+  const color = document.getElementById('color').value;
+  const size  = parseInt(document.getElementById('size').value,10);
+  const x     = parseInt(document.getElementById('x').value,10);
+  const y     = parseInt(document.getElementById('y').value,10);
+  const font  = document.getElementById('fontSelect').value;
+
+  ctx.fillStyle = color;
+  ctx.font = `${size}px ${font}`;
+  ctx.textBaseline = 'top';
+  ctx.fillText(text, x, y);
+
+  document.getElementById('download').href = canvas.toDataURL();
+}
+
+window.onload = draw;
+</script>
+</body>
+</html>
