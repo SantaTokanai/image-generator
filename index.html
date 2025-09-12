@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>画像生成シミュレーター</title>
+<style>
+  body { font-family: sans-serif; padding:20px; }
+  canvas { border:1px solid #ccc; max-width:100%; }
+  .controls { margin-top:10px; }
+</style>
+</head>
+<body>
+<h1>画像生成シミュレーター</h1>
+
+<img id="baseImg" src="base.png" alt="Base" style="display:none;">
+<canvas id="canvas"></canvas>
+
+<div class="controls">
+  <p>テキスト: <input type="text" id="text" value="サンプル"></p>
+  <p>色: <input type="color" id="color" value="#000000"></p>
+  <p>サイズ: <input type="number" id="size" value="48"> px</p>
+  <p>X座標: <input type="number" id="x" value="50"> / Y座標: <input type="number" id="y" value="50"></p>
+  <button onclick="draw()">プレビュー</button>
+  <a id="download" download="generated.png">ダウンロード</a>
+</div>
+
+<script>
+function draw(){
+  const img = document.getElementById('baseImg');
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = img.width;
+  canvas.height = img.height;
+
+  ctx.drawImage(img, 0, 0);
+  ctx.fillStyle = document.getElementById('color').value;
+  ctx.font = `${document.getElementById('size').value}px sans-serif`;
+  ctx.fillText(
+    document.getElementById('text').value,
+    parseInt(document.getElementById('x').value),
+    parseInt(document.getElementById('y').value)
+  );
+
+  document.getElementById('download').href = canvas.toDataURL();
+}
+window.onload = draw;
+</script>
+</body>
+</html>
