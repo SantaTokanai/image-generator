@@ -49,11 +49,6 @@ header .subtitle{display:block;font-size:0.8rem;margin-top:6px;color:rgba(255,25
   justify-content:center;
   margin:14px 0 20px;
 }
-button.primary{
-  background:linear-gradient(90deg,var(--accent1),var(--accent2));
-  color:#fff;border:0;padding:12px 18px;border-radius:10px;font-size:1rem;
-  cursor:pointer;font-weight:700;
-}
 a.download{
   display:inline-flex;align-items:center;justify-content:center;
   padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none;
@@ -96,16 +91,18 @@ a.download{
 </header>
 
 <div class="wrap">
+  <!-- プレビュー -->
   <div class="preview-area">
     <img id="previewImage" alt="プレビュー画像">
     <div class="preview-note">プレビューを見ながら設定してください。長押しで保存（スマホ）</div>
   </div>
 
+  <!-- ダウンロードボタン -->
   <div class="preview-actions">
-    <button id="updateBtn" class="primary" type="button">プレビュー更新</button>
     <a id="downloadBtn" class="download" download="generated.png" href="#">ダウンロード</a>
   </div>
 
+  <!-- 設定パネル -->
   <div class="controls">
     <div class="field">
       <label for="textInput">文字</label>
@@ -139,7 +136,7 @@ a.download{
     <div class="field">
       <label for="xRange">X座標 (px)</label>
       <div class="slider-wrap">
-        <input id="xRange" type="range" min="0" max="1000" value="200">
+        <input id="xRange" type="range" min="0" max="600" value="200">
         <span class="slider-value" id="xVal">200</span>
       </div>
     </div>
@@ -147,7 +144,7 @@ a.download{
     <div class="field">
       <label for="yRange">Y座標 (px)</label>
       <div class="slider-wrap">
-        <input id="yRange" type="range" min="0" max="1000" value="600">
+        <input id="yRange" type="range" min="0" max="650" value="600">
         <span class="slider-value" id="yVal">600</span>
       </div>
     </div>
@@ -178,7 +175,6 @@ const sizeVal = document.getElementById('sizeVal');
 const xVal = document.getElementById('xVal');
 const yVal = document.getElementById('yVal');
 const colorInput = document.getElementById('colorInput');
-const updateBtn = document.getElementById('updateBtn');
 const downloadBtn = document.getElementById('downloadBtn');
 
 let baseImg = new Image();
@@ -205,13 +201,7 @@ function drawAndUpdatePreview(){
   downloadBtn.href = dataUrl;
 }
 
-// 「プレビュー更新」ボタンで手動更新
-updateBtn.addEventListener('click', e => {
-  e.preventDefault();
-  drawAndUpdatePreview();
-});
-
-// 設定項目の変更で自動更新
+// 自動更新
 [textInput, fontSelect, sizeRange, xRange, yRange, colorInput].forEach(el => {
   el.addEventListener('input', drawAndUpdatePreview);
 });
@@ -225,7 +215,7 @@ updateBtn.addEventListener('click', e => {
   });
 });
 
-// 初回描画（サンプル文字反映）
+// 初回描画
 window.addEventListener('load', drawAndUpdatePreview);
 </script>
 </body>
