@@ -1,27 +1,46 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>アイコン文字入れシミュレーター　-慌てて作ったからまだ試作だわん-</title>
 
 <!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&family=M+PLUS+Rounded+1c:wght@700&family=Kosugi+Maru&family=Baloo+2:wght@700&family=Montserrat:wght@400;700&family=Lora:wght@400;700&family=Poppins:wght@700&family=Fredoka+One&display=swap" rel="stylesheet">
 
 <style>
-:root{
+:root {
   --accent1:#5b6ef7;
   --accent2:#7c4bd6;
   --card-bg:#fff;
   --page-bg:#f6f8fb;
   --text:#222;
 }
-body{margin:0;background:var(--page-bg);font-family:"Noto Sans JP",system-ui;}
-header{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:white;text-align:center;padding:18px 12px;}
+body{
+  margin:0;
+  background:var(--page-bg);
+  font-family:"Noto Sans JP",system-ui;
+}
+header{
+  background:linear-gradient(90deg,var(--accent1),var(--accent2));
+  color:#fff;
+  text-align:center;
+  padding:18px 12px;
+}
 header h1{margin:0;font-size:1.1rem;font-weight:700;}
-header .subtitle{display:block;font-size:0.8rem;margin-top:6px;color:rgba(255,255,255,0.9);font-weight:500;}
+header .subtitle{
+  display:block;
+  font-size:0.8rem;
+  margin-top:6px;
+  color:rgba(255,255,255,0.9);
+  font-weight:500;
+}
 
-.wrap{max-width:980px;margin:18px auto;padding:0 16px;}
+.wrap{
+  max-width:960px;
+  margin:18px auto;
+  padding:0 16px;
+}
 
 .preview-area{
   background:var(--card-bg);
@@ -29,19 +48,42 @@ header .subtitle{display:block;font-size:0.8rem;margin-top:6px;color:rgba(255,25
   padding:16px;
   box-shadow:0 6px 18px rgba(20,20,40,0.06);
   text-align:center;
-  margin-bottom:16px;
 }
 #previewImage{
   max-width:100%;
   height:auto;
   border-radius:10px;
-  display:inline-block;
   box-shadow:0 4px 18px rgba(0,0,0,0.08);
   touch-action: manipulation;
   -webkit-user-select:none;
   user-select:none;
 }
-.preview-note{font-size:0.9rem;color:#555;margin-top:10px;}
+.preview-note{
+  font-size:0.9rem;
+  color:#555;
+  margin-top:10px;
+}
+
+.base-selection{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  justify-content:center;
+  margin:16px 0;
+}
+.base-selection button{
+  padding:8px 14px;
+  border-radius:8px;
+  border:1px solid #d0d6e0;
+  background:#fbfdff;
+  cursor:pointer;
+  font-weight:700;
+}
+.base-selection button.active{
+  background:var(--accent1);
+  color:#fff;
+  border-color:var(--accent2);
+}
 
 .controls{
   background:var(--card-bg);
@@ -49,8 +91,9 @@ header .subtitle{display:block;font-size:0.8rem;margin-top:6px;color:rgba(255,25
   padding:18px;
   box-shadow:0 6px 18px rgba(20,20,40,0.06);
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
   gap:14px;
+  margin-top:18px;
 }
 .field{display:flex;flex-direction:column;}
 .field label{font-weight:700;margin-bottom:8px;font-size:0.95rem;}
@@ -67,18 +110,20 @@ header .subtitle{display:block;font-size:0.8rem;margin-top:6px;color:rgba(255,25
 
 .download-area{
   text-align:center;
-  margin:20px 0;
+  margin:22px 0;
 }
 a.download{
-  display:inline-flex;align-items:center;justify-content:center;
-  padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none;
-  background:#111;color:#fff;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:12px 18px;
+  border-radius:10px;
+  font-weight:700;
+  text-decoration:none;
+  background:#111;
+  color:#fff;
 }
 
-@media (max-width:640px){
-  .controls{grid-template-columns:1fr;}
-  header h1{font-size:1rem;}
-}
 #hiddenCanvas{display:none;}
 </style>
 </head>
@@ -94,6 +139,12 @@ a.download{
   <div class="preview-area">
     <img id="previewImage" alt="プレビュー画像">
     <div class="preview-note">プレビューを見ながら設定してください。長押しで保存（スマホ）</div>
+  </div>
+
+  <!-- ベース画像切替 -->
+  <div class="base-selection">
+    <button type="button" class="base-btn active" data-src="base1.png">画像1</button>
+    <button type="button" class="base-btn" data-src="base2.png">画像2</button>
   </div>
 
   <!-- 設定パネル -->
@@ -139,7 +190,7 @@ a.download{
       <label for="yRange">Y座標 (px)</label>
       <div class="slider-wrap">
         <input id="yRange" type="range" min="0" max="700" value="580">
-        <span class="slider-value" id="yVal">600</span>
+        <span class="slider-value" id="yVal">580</span>
       </div>
     </div>
 
@@ -151,7 +202,7 @@ a.download{
     </div>
   </div>
 
-  <!-- ダウンロードボタン -->
+  <!-- ダウンロード -->
   <div class="download-area">
     <a id="downloadBtn" class="download" download="generated.png" href="#">ダウンロード</a>
   </div>
@@ -160,7 +211,6 @@ a.download{
 <canvas id="hiddenCanvas"></canvas>
 
 <script>
-const baseSrc = 'base.png';
 const previewImage = document.getElementById('previewImage');
 const hiddenCanvas = document.getElementById('hiddenCanvas');
 const ctx = hiddenCanvas.getContext('2d');
@@ -177,8 +227,7 @@ const colorInput = document.getElementById('colorInput');
 const downloadBtn = document.getElementById('downloadBtn');
 
 let baseImg = new Image();
-baseImg.src = baseSrc;
-baseImg.onload = drawAndUpdatePreview;
+baseImg.src = 'base1.png';
 
 function drawToCanvas(){
   hiddenCanvas.width = baseImg.naturalWidth || baseImg.width;
@@ -201,20 +250,25 @@ function drawAndUpdatePreview(){
 }
 
 // 自動更新
-[textInput, fontSelect, sizeRange, xRange, yRange, colorInput].forEach(el => {
-  el.addEventListener('input', drawAndUpdatePreview);
-});
-
-// スライダーの値表示更新
-[sizeRange, xRange, yRange].forEach(range=>{
-  range.addEventListener('input', ()=>{
+[textInput,fontSelect,sizeRange,xRange,yRange,colorInput].forEach(el=>{
+  el.addEventListener('input', ()=>{
     sizeVal.textContent = sizeRange.value;
     xVal.textContent = xRange.value;
     yVal.textContent = yRange.value;
+    drawAndUpdatePreview();
   });
 });
 
-// 初回描画
+// ベース画像切替
+document.querySelectorAll('.base-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.base-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    baseImg.src = btn.dataset.src;
+    baseImg.onload = drawAndUpdatePreview;
+  });
+});
+
 window.addEventListener('load', drawAndUpdatePreview);
 </script>
 </body>
