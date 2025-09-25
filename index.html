@@ -30,9 +30,9 @@ header .subtitle{display:block;font-size:0.8rem;margin-top:6px;color:rgba(255,25
   box-shadow:0 6px 18px rgba(20,20,40,0.08);
   text-align:center;
   margin-bottom:16px;
-  position:sticky;        /* ← 追加 */
-  top:0;                 /* ← 画面上部に固定 */
-  z-index:10;            /* ← 前面に表示 */
+  position:sticky;
+  top:0;
+  z-index:10;
 }
 #previewImage{
   max-width:100%;
@@ -54,7 +54,7 @@ header .subtitle{display:block;font-size:0.8rem;margin-top:6px;color:rgba(255,25
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
   gap:14px;
-  margin-top:20px; /* stickyプレビューとの間に余白 */
+  margin-top:20px;
 }
 .field{display:flex;flex-direction:column;}
 .field label{font-weight:700;margin-bottom:8px;font-size:0.95rem;}
@@ -101,12 +101,6 @@ a.download{
     <div class="preview-note">プレビューを見ながら設定してください。長押しで保存（スマホ）</div>
   </div>
 
-  <!-- ベース画像切替 -->
-  <div class="base-selection">
-    <button type="button" class="base-btn active" data-src="base1.png">画像1</button>
-    <button type="button" class="base-btn" data-src="base2.png">画像2</button>
-  </div>
-
   <!-- 設定パネル -->
   <div class="controls">
     <div class="field">
@@ -117,19 +111,15 @@ a.download{
     <div class="field">
       <label for="fontSelect">書体</label>
 <select id="fontSelect">
-  <!-- 英字専用・劇的に変化するフォント -->
   <option value="Montserrat">Montserrat</option>
   <option value="Poppins">Poppins</option>
   <option value="Lora">Lora</option>
   <option value="Fredoka One">Fredoka One</option>
-
-  <!-- 日本語専用・劇的に変化するフォント -->
   <option value="Baloo 2">Baloo 2</option>
   <option value="Kosugi Maru">Kosugi Maru</option>
   <option value="M PLUS Rounded 1c">M PLUS Rounded 1c</option>
   <option value="Sawarabi Gothic">Sawarabi Gothic</option>
 </select>
-
     </div>
 
     <div class="field">
@@ -189,7 +179,7 @@ const colorInput = document.getElementById('colorInput');
 const downloadBtn = document.getElementById('downloadBtn');
 
 let baseImg = new Image();
-baseImg.src = 'base1.png';
+baseImg.src = 'base.png'; // ← 1枚に固定
 
 function drawToCanvas(){
   hiddenCanvas.width = baseImg.naturalWidth || baseImg.width;
@@ -218,16 +208,6 @@ function drawAndUpdatePreview(){
     xVal.textContent = xRange.value;
     yVal.textContent = yRange.value;
     drawAndUpdatePreview();
-  });
-});
-
-// ベース画像切替
-document.querySelectorAll('.base-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.base-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    baseImg.src = btn.dataset.src;
-    baseImg.onload = drawAndUpdatePreview;
   });
 });
 
