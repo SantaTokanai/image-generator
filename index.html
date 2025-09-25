@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>アイコン文字入れシミュレーター　-慌てて作ったからまだ試作だわん-</title>
+<title>アイコン文字入れシミュレーター</title>
 
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&family=M+PLUS+Rounded+1c:wght@700&family=Kosugi+Maru&family=Baloo+2:wght@700&family=Montserrat:wght@400;700&family=Lora:wght@400;700&family=Poppins:wght@700&family=Fredoka+One&display=swap" rel="stylesheet">
+<!-- Google Fonts: 追加フォントをまとめて読み込み -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&family=M+PLUS+Rounded+1c:wght@700&family=Kosugi+Maru&family=Baloo+2:wght@700&family=Montserrat:wght@400;700&family=Lora:wght@400;700&family=Poppins:wght@700&family=Fredoka+One&family=Rock+Salt&family=Permanent+Marker&family=Cinzel:wght@700&family=Zen+Maru+Gothic:wght@700&family=Shippori+Mincho:wght@700&family=Kaisei+Tokumin:wght@700&family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <style>
 :root{
@@ -85,15 +85,14 @@ a.download{
 }
 #hiddenCanvas{display:none;}
 
-/* ===== 追加: スライダーつまみの操作性改善 ===== */
+/* スライダーつまみ操作性改善 */
 input[type="range"] {
   -webkit-appearance: none;
-  height: 6px;               /* バーの高さ */
+  height: 6px;
   border-radius: 3px;
   background: #cfd6e6;
   cursor: pointer;
 }
-/* Chrome/Safari/Edge */
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   height: 28px;
@@ -104,7 +103,6 @@ input[type="range"]::-webkit-slider-thumb {
   box-shadow: 0 0 3px rgba(0,0,0,0.4);
   cursor: grab;
 }
-/* Firefox */
 input[type="range"]::-moz-range-thumb {
   height: 28px;
   width: 28px;
@@ -114,19 +112,17 @@ input[type="range"]::-moz-range-thumb {
   box-shadow: 0 0 3px rgba(0,0,0,0.4);
   cursor: grab;
 }
-/* ドラッグ中 */
 input[type="range"]::-webkit-slider-thumb:active,
 input[type="range"]::-moz-range-thumb:active {
   background: var(--accent2);
   cursor: grabbing;
 }
 </style>
-
 </head>
 <body>
 <header>
   <h1>アイコン文字入れシミュレーター
-    <span class="subtitle">-慌てて作ったからまだ試作だわん-</span>
+    <span class="subtitle">- フォントをたっぷり追加しました -</span>
   </h1>
 </header>
 
@@ -155,13 +151,20 @@ input[type="range"]::-moz-range-thumb:active {
         <option value="Kosugi Maru">Kosugi Maru</option>
         <option value="M PLUS Rounded 1c">M PLUS Rounded 1c</option>
         <option value="Sawarabi Gothic">Sawarabi Gothic</option>
+        <option value="Rock Salt">Rock Salt</option>
+        <option value="Permanent Marker">Permanent Marker</option>
+        <option value="Cinzel">Cinzel</option>
+        <option value="Zen Maru Gothic">Zen Maru Gothic</option>
+        <option value="Shippori Mincho">Shippori Mincho</option>
+        <option value="Kaisei Tokumin">Kaisei Tokumin</option>
+        <option value="Press Start 2P">Press Start 2P</option>
       </select>
     </div>
 
     <div class="field">
       <label for="sizeRange">文字サイズ (px)</label>
       <div class="slider-wrap">
-        <input id="sizeRange" type="range" min="50" max="400" value="120">
+        <input id="sizeRange" type="range" min="50" max="350" value="120">
         <span class="slider-value" id="sizeVal">120</span>
       </div>
     </div>
@@ -215,7 +218,7 @@ const colorInput = document.getElementById('colorInput');
 const downloadBtn = document.getElementById('downloadBtn');
 
 let baseImg = new Image();
-baseImg.src = 'base.png'; // ← 1枚に固定
+baseImg.src = 'base.png';
 
 function drawToCanvas(){
   hiddenCanvas.width = baseImg.naturalWidth || baseImg.width;
@@ -237,7 +240,6 @@ function drawAndUpdatePreview(){
   downloadBtn.href = dataUrl;
 }
 
-// 自動更新
 [textInput,fontSelect,sizeRange,xRange,yRange,colorInput].forEach(el=>{
   el.addEventListener('input', ()=>{
     sizeVal.textContent = sizeRange.value;
