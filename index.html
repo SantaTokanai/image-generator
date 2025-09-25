@@ -84,6 +84,42 @@ a.download{
   header h1{font-size:1rem;}
 }
 #hiddenCanvas{display:none;}
+
+/* ===== 追加: スライダーつまみの操作性改善 ===== */
+input[type="range"] {
+  -webkit-appearance: none;
+  height: 6px;               /* バーの高さ */
+  border-radius: 3px;
+  background: #cfd6e6;
+  cursor: pointer;
+}
+/* Chrome/Safari/Edge */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 28px;
+  width: 28px;
+  border-radius: 50%;
+  background: var(--accent1);
+  border: 2px solid #fff;
+  box-shadow: 0 0 3px rgba(0,0,0,0.4);
+  cursor: grab;
+}
+/* Firefox */
+input[type="range"]::-moz-range-thumb {
+  height: 28px;
+  width: 28px;
+  border-radius: 50%;
+  background: var(--accent1);
+  border: 2px solid #fff;
+  box-shadow: 0 0 3px rgba(0,0,0,0.4);
+  cursor: grab;
+}
+/* ドラッグ中 */
+input[type="range"]::-webkit-slider-thumb:active,
+input[type="range"]::-moz-range-thumb:active {
+  background: var(--accent2);
+  cursor: grabbing;
+}
 </style>
 
 </head>
@@ -110,16 +146,16 @@ a.download{
 
     <div class="field">
       <label for="fontSelect">書体</label>
-<select id="fontSelect">
-  <option value="Montserrat">Montserrat</option>
-  <option value="Poppins">Poppins</option>
-  <option value="Lora">Lora</option>
-  <option value="Fredoka One">Fredoka One</option>
-  <option value="Baloo 2">Baloo 2</option>
-  <option value="Kosugi Maru">Kosugi Maru</option>
-  <option value="M PLUS Rounded 1c">M PLUS Rounded 1c</option>
-  <option value="Sawarabi Gothic">Sawarabi Gothic</option>
-</select>
+      <select id="fontSelect">
+        <option value="Montserrat">Montserrat</option>
+        <option value="Poppins">Poppins</option>
+        <option value="Lora">Lora</option>
+        <option value="Fredoka One">Fredoka One</option>
+        <option value="Baloo 2">Baloo 2</option>
+        <option value="Kosugi Maru">Kosugi Maru</option>
+        <option value="M PLUS Rounded 1c">M PLUS Rounded 1c</option>
+        <option value="Sawarabi Gothic">Sawarabi Gothic</option>
+      </select>
     </div>
 
     <div class="field">
